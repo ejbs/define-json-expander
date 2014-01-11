@@ -83,9 +83,14 @@
                  (cdr (find json-prop (cdr prop-slot) :key #'car))
                  (when default (list (get-prop default slot))))))
       `(progn
-         (defclass ,name ,direct-superclasses
-           ,cleaned-direct-slots
-           ,@options)
+         ;; This remove feels like a small kludge
+         ;; Basically it's there to remove the NIL (replace by gensym) that occurs if there are no options provided
+         ;; It's a way to say "Replace with nothing" instead of "Replace with NIL"
+         ,(let ((g (gensym)))
+               (remove g
+                       `(defclass ,name ,direct-superclasses
+                          ,cleaned-direct-slots
+                          ,@(or options (list g)))))
          (define-json-decoder ,name
              ,@(loop
                   for slot in cleaned-direct-slots
