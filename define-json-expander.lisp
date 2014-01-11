@@ -1,3 +1,5 @@
+;; Possible TODO: Re-write using MOP?
+
 (in-package :define-json-expander)
 
 (defun flatten-n-times (tree &optional (n 2))
