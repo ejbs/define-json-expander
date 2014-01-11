@@ -54,13 +54,14 @@
 (defun get-prop (symbol list)
   (nth (1+ (position symbol list)) list))
 
-(defmacro define-json-expander (name direct-superclasses direct-slots &optional options)
+(defmacro define-json-expander (name direct-superclasses direct-slots &rest options)
   (declare (type symbol name) (type list direct-superclasses direct-slots options))
   ;; Preparation
   (multiple-value-bind (cleaned-direct-slots collected-properties)
       (clean-options direct-slots :json-prop :json-decoder)
     
     ;; Automatically store all unknown json-properties + values in this slot
+    ;; Note: This is used by define-json-decoder
     (unless (find 'rest direct-slots
                   :test (lambda (term list)
                           (find term list)))
@@ -84,7 +85,7 @@
       `(progn
          (defclass ,name ,direct-superclasses
            ,cleaned-direct-slots
-           ,options)
+           ,@options)
          (define-json-decoder ,name
              ,@(loop
                   for slot in cleaned-direct-slots
