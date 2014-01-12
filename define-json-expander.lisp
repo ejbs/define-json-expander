@@ -65,9 +65,9 @@
     (unless (find 'rest direct-slots
                   :test (lambda (term list)
                           (find term list)))
-      (push '(rest :documentation "Unknown flags put here") direct-slots))
+      (push '(rest :documentation "Unknown flags put here" :initarg :rest :accessor rest-of) direct-slots))
     
-    ;; Append :initarg to all slot in case it is not present yet
+    ;; Append :initarg to all slots in case it is not present yet
     (setf cleaned-direct-slots
           (mapcar
            (lambda (slot)
@@ -75,6 +75,16 @@
                  slot
                  (append slot
                          (list :initarg (intern (symbol-name (car slot)) 'keyword)))))
+           cleaned-direct-slots))
+    
+    ;; Append :accessor to all slots
+    (setf cleaned-direct-slots
+          (mapcar
+           (lambda (slot)
+             (if (or (find :accessor slot) (find :reader slot) (find :writer slot))
+                 slot
+                 (append slot
+                         (list :accessor (intern (symbol-name (car slot)) 'keyword)))))
            cleaned-direct-slots))
     
     ;; Expansion
