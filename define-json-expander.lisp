@@ -77,16 +77,6 @@
                          (list :initarg (intern (symbol-name (car slot)) 'keyword)))))
            cleaned-direct-slots))
     
-    ;; Append :accessor to all slots
-    (setf cleaned-direct-slots
-          (mapcar
-           (lambda (slot)
-             (if (or (find :accessor slot) (find :reader slot) (find :writer slot))
-                 slot
-                 (append slot
-                         (list :accessor (intern (symbol-name (car slot)) 'keyword)))))
-           cleaned-direct-slots))
-    
     ;; Expansion
     (flet ((get-json-prop (json-prop default prop-slot slot)
              (if (find json-prop (cdr prop-slot) :key #'car)
