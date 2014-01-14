@@ -65,8 +65,8 @@
     (unless (find 'rest direct-slots
                   :test (lambda (term list)
                           (find term list)))
-      (push '(rest :documentation "Unknown flags put here" :initarg :rest :accessor rest-of) direct-slots))
-    
+      (push '(rest :documentation "Unknown flags put here" :initarg :rest :accessor rest-of) cleaned-direct-slots))
+      
     ;; Append :initarg to all slots in case it is not present yet
     (setf cleaned-direct-slots
           (mapcar
