@@ -43,3 +43,15 @@ The following are taken from json.org/example.html
 **Code**
 
 (define-json-expander menu ()
+ ((menu :json-decoder #'decode-menu-slots)))
+
+(define-json-expander menu-slots ()
+         ((id)
+          (value)
+          (popup :json-decoder #'decode-menuitem)))
+
+(define-json-expander menuitem ()
+  ((menuitem :json-decoder (lambda (x) (loop for obj in x collect (decode-button obj))))))
+
+(define-json-expander button ()
+  ((value) (onclick)))
