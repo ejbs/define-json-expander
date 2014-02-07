@@ -62,11 +62,10 @@
     
     ;; Automatically store all unknown json-properties + values in this slot
     ;; Note: This is used by define-json-decoder
-    (unless (find 'rest direct-slots
-                  :test (lambda (term list)
-                          (find term list)))
-      (push '(rest :documentation "Unknown flags put here" :initarg :rest :accessor rest-of) cleaned-direct-slots))
-      
+    (unless  (find 'rest cleaned-direct-slots
+                   :test (lambda (term list)
+                           (find term list)))
+      (push `(rest :documentation "Unknown flags put here" :initarg :rest :accessor ,(intern (string-upcase "rest-of") *package*)) cleaned-direct-slots))
     ;; Append :initarg to all slots in case it is not present yet
     (setf cleaned-direct-slots
           (mapcar
