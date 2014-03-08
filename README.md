@@ -30,6 +30,7 @@ The following are taken from json.org/example.html
 
 **JSON**
 
+```
 {"menu": {
   "id": "file",
   "value": "File",
@@ -41,9 +42,11 @@ The following are taken from json.org/example.html
     ]
   }
 }}
+```
 
 **Code**
 
+```
 (define-json-expander menu ()
  ((menu :json-decoder #'decode-menu-slots)))
 
@@ -57,3 +60,4 @@ The following are taken from json.org/example.html
 
 (define-json-expander button ()
   ((value) (onclick)))
+```
