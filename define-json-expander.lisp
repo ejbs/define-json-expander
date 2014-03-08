@@ -16,6 +16,7 @@
     (nreverse list)))
 
 (defun group (source n)
+  (declare (type list source) (type integer n))
   (if (zerop n) (error "zero length"))
   (labels ((rec (source acc)
 		(let ((rest (nthcdr n source)))
@@ -26,6 +27,10 @@
 
 (defun clean-option (direct-slot option)
   "Returns two values, the first being the `direct-slot' with the `option' and its value stripped and the second being a list consisting of the name of the slot and the found prop and value. If such a prop isn't found then the second element is NIL."
+  (declare (type (or symbol list) direct-slot)
+           (type symbol option))
+  (when (eq (type-of direct-slot) 'symbol)
+    (return-from clean-option (values direct-slot nil)))
   (let* ((grouped (group (cdr direct-slot) 2))
          (found-prop (find option grouped :key #'car :test #'eq))
          (final (append (list (first direct-slot))
@@ -36,6 +41,7 @@
 
 (defun clean-options (slots &rest options)
   "Cleans several options from several slots."
+  (declare (type list slots options))
   (labels ((rec (dslots options &optional prop-accum)
              (when options
                  (let (slots
@@ -59,18 +65,23 @@
   ;; Preparation
   (multiple-value-bind (cleaned-direct-slots collected-properties)
       (clean-options direct-slots :json-prop :json-decoder)
+
+    ;; Was a slot provided by its symbol alone? If so, wrap it up in a list
+    (setf cleaned-direct-slots
+          (loop for s in cleaned-direct-slots
+             collect (if (listp s) s (list s))))
     
     ;; Automatically store all unknown json-properties + values in this slot
     ;; Note: This is used by define-json-decoder
     (unless  (find 'rest cleaned-direct-slots
-                   :test (lambda (term list)
-                           (find term list)))
+                   :test (lambda (term slot)
+                           (find term slot)))
       (push `(rest :documentation "Unknown flags put here" :initarg :rest :accessor ,(intern (string-upcase "rest-of") *package*)) cleaned-direct-slots))
     ;; Append :initarg to all slots in case it is not present yet
     (setf cleaned-direct-slots
           (mapcar
            (lambda (slot)
-             (if (find :initarg slot)
+             (if (and (listp slot) (find :initarg slot))
                  slot
                  (append slot
                          (list :initarg (intern (symbol-name (car slot)) 'keyword)))))
