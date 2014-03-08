@@ -25,7 +25,7 @@ All unknown/unusued data will be put in the REST slot of the resulting object.
 Example usage
 -------------
 
-The following are taken from json.org/example.html
+The following JSON is taken from json.org/example.html
 
 
 **JSON**
