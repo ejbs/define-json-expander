@@ -1,2 +1,4 @@
 (defpackage :define-json-expander
-  (:use :cl))
+  (:use :cl)
+  (:export :define-json-expander
+           :*accessor-prefix*))
