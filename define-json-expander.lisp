@@ -1,6 +1,6 @@
-;; Possible TODO: Re-write using MOP?
-
 (in-package :define-json-expander)
+
+(defparameter *accessor-prefix* "DECODE-~A")
 
 (defun flatten-n-times (tree &optional (n 2))
   "Flatten a tree by n levels of subtrees. n = 1 doesn't flatten at all."
@@ -144,7 +144,7 @@
   (flet ((slot-name (prop) (first prop))
          (json-name (prop) (second prop))
          (decoder-function (prop) (third prop)))
-    `(defun ,(intern (format nil "DECODE-~A" (symbol-name name)))
+    `(defun ,(intern (format nil *accessor-prefix* (symbol-name name)))
          (,name)
        ,(format nil "Takes a JSON document in list form and decodes it into a CLOS ~A object" name)
        ;; This flet is inside the macro-expansion because the json-data  is only available at run-time
