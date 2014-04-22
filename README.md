@@ -2,7 +2,7 @@ define-json-expander
 =====================
 
 Small 'library' for writing simple interfaces between JSON files and CLOS.
-The `define-json-expander' macro creates both a CLOS-class and a decoder function named DECODE-* where * = name for simple use.
+The `define-json-expander' macro creates both a CLOS-class and a decoder function named DECODE-* where * = name (this can be changed with *accessor-prefix*) for simple use.
 define-json-expander is supposed to be used in tandem with cl-json as its decode-functions expects cl-json list-decoded JSON output as input.
 
 This library is written by Johan Sjölén and is licensed under the MIT license.
